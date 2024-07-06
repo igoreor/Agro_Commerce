@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,7 +19,7 @@ public class Reservation {
     private Integer sellerId;
     private Integer productId;
     private BigDecimal totalPrice;
-    private LocalDateTime reservationDateTime;
+    private LocalDate reservationDateTime;
 
     @Override
     public String toString() {
