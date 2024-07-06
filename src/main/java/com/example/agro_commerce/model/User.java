@@ -5,7 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 @Setter
 @Getter
@@ -15,19 +16,19 @@ public class User {
     private Integer userId;
     private String userName;
     private String email;
-    private Integer senha;
-    private String sexo;
-    private LocalDateTime dataNascimento;
+    private Integer password;
+    private String sex;
+    private LocalDate birthDate;
 
     @Override
     public String toString() {
         return "User{" +
                 "userId: " + userId +
-                ", userName: " + userName +
+                ", user name: " + userName +
                 ", email: " + email +
-                ", senha: " + senha +
-                ", sexo: " + sexo +
-                "data de nascimento: " + dataNascimento+
+                ", password: " + password +
+                ", sex: " + sex +
+                "birth of date: " + birthDate+
                 '}';
     }
 }
