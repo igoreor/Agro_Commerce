@@ -12,13 +12,14 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class Buyer {
-    private Integer buyer_id;
-    private Integer user_id;
+    private Integer buyerId;
+    private Integer userId;
+
     @Override
     public String toString() {
         return "Buyer{" +
-                "buyer_id=" + buyer_id +
-                ", user_id=" + user_id +
+                "buyer_id=" + buyerId +
+                ", user_id=" + userId +
                 '}';
     }
 }
