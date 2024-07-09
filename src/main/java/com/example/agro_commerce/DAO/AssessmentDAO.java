@@ -45,7 +45,7 @@ public class AssessmentDAO {
             statement.setInt(1, assessment.getBuyerId());
             statement.setInt(2, assessment.getSellerId());
             statement.setDouble(3, assessment.getAssessment());
-            statement.setTimestamp(4, java.sql.Timestamp.valueOf(String.valueOf(assessment.getAssessmentDate())));
+            statement.setTimestamp(4, java.sql.Timestamp.valueOf(assessment.getAssessmentDate().atStartOfDay()));
 
             rowInserted = statement.executeUpdate() > 0;
 
@@ -53,9 +53,9 @@ public class AssessmentDAO {
             if (generatedKeys.next()) {
                 assessment.setAssessmentId(generatedKeys.getInt(1));
             }
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return rowInserted;
     }
@@ -77,11 +77,17 @@ public class AssessmentDAO {
                 java.sql.Timestamp assessmentDate = resultSet.getTimestamp("assessment_date");
 
                 Assessment assessmentObj = new Assessment();
+                assessmentObj.setAssessmentId(assessmentId);
+                assessmentObj.setBuyerId(userId);
+                assessmentObj.setSellerId(sellerId);
+                assessmentObj.setAssessment(assessment);
+                assessmentObj.setAssessmentDate(assessmentDate.toLocalDateTime().toLocalDate());
+
                 listAssessments.add(assessmentObj);
             }
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return listAssessments;
     }
@@ -96,13 +102,13 @@ public class AssessmentDAO {
             statement.setInt(1, assessment.getBuyerId());
             statement.setInt(2, assessment.getSellerId());
             statement.setDouble(3, assessment.getAssessment());
-            statement.setTimestamp(4, java.sql.Timestamp.valueOf(String.valueOf(assessment.getAssessmentDate())));
+            statement.setTimestamp(4, java.sql.Timestamp.valueOf(assessment.getAssessmentDate().atStartOfDay()));
             statement.setInt(5, assessment.getAssessmentId());
 
             rowUpdated = statement.executeUpdate() > 0;
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return rowUpdated;
     }
@@ -117,9 +123,9 @@ public class AssessmentDAO {
             statement.setInt(1, assessment.getAssessmentId());
 
             rowDeleted = statement.executeUpdate() > 0;
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return rowDeleted;
     }
@@ -141,11 +147,16 @@ public class AssessmentDAO {
                     java.sql.Timestamp assessmentDate = resultSet.getTimestamp("assessment_date");
 
                     assessment = new Assessment();
+                    assessment.setAssessmentId(assessmentId);
+                    assessment.setBuyerId(userId);
+                    assessment.setSellerId(sellerId);
+                    assessment.setAssessment(assessmentValue);
+                    assessment.setAssessmentDate(assessmentDate.toLocalDateTime().toLocalDate());
                 }
             }
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return assessment;
     }

@@ -76,11 +76,18 @@ public class HistoricDAO {
 
             while (resultSet.next()) {
                 int historicId = resultSet.getInt("historic_id");
-                int reservationId = resultSet.getInt("reservation_id");
+                int reservation = resultSet.getInt("reservation_id");
                 int userId = resultSet.getInt("user_id");
                 int sellerId = resultSet.getInt("seller_id");
                 java.sql.Timestamp boughtIn = resultSet.getTimestamp("bought_in");
+
                 Historic historic = new Historic();
+                historic.setHistoricId(historicId);
+                historic.setReservation(reservation);
+                historic.setUserId(userId);
+                historic.setSellerId(sellerId);
+                historic.setBoughtIn(boughtIn.toLocalDateTime().toLocalDate());
+
                 listHistorics.add(historic);
             }
         }
@@ -89,6 +96,7 @@ public class HistoricDAO {
 
         return listHistorics;
     }
+
 
     public boolean updateHistoric(Historic historic) throws SQLException {
         String sql = "UPDATE historic SET reservation_id = ?, user_id = ?, seller_id = ?, bought_in = ? WHERE historic_id = ?";
@@ -139,18 +147,29 @@ public class HistoricDAO {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    int reservationId = resultSet.getInt("reservation_id");
+                    int reservation = resultSet.getInt("reservation");
                     int userId = resultSet.getInt("user_id");
                     int sellerId = resultSet.getInt("seller_id");
                     java.sql.Timestamp boughtIn = resultSet.getTimestamp("bought_in");
 
+                    // Create Historic object with retrieved values
                     historic = new Historic();
+                    historic.setHistoricId(historicId); // Set the historicId
+                    historic.setReservation(reservation);
+                    historic.setUserId(userId);
+                    historic.setSellerId(sellerId);
+                    historic.setBoughtIn(boughtIn.toLocalDateTime().toLocalDate()); // Convert Timestamp to LocalDate
                 }
             }
-        }
+        } catch (SQLException e) {
 
-        disconnect();
+            e.printStackTrace();
+            throw e;
+        } finally {
+            disconnect();
+        }
 
         return historic;
     }
 }
+

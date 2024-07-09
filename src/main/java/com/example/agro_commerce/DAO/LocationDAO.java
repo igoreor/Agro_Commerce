@@ -45,7 +45,7 @@ public class LocationDAO {
             statement.setInt(1, location.getSellerId());
             statement.setString(2, location.getStreet());
             statement.setString(3, location.getNeighborhood());
-            statement.setString(4, String.valueOf(location.getNumberHouse()));
+            statement.setInt(4, location.getNumberHouse());
             statement.setString(5, location.getCity());
 
             rowInserted = statement.executeUpdate() > 0;
@@ -70,10 +70,10 @@ public class LocationDAO {
                 int sellerId = resultSet.getInt("seller_id");
                 String street = resultSet.getString("street");
                 String neighborhood = resultSet.getString("neighborhood");
-                String numberHouse = resultSet.getString("number_house");
+                int numberHouse = resultSet.getInt("number_house");
                 String city = resultSet.getString("city");
 
-                Location location = new Location();
+                Location location = new Location(locationId, sellerId, street, neighborhood, city, numberHouse);
                 listLocation.add(location);
             }
         }
@@ -110,7 +110,7 @@ public class LocationDAO {
             statement.setInt(1, location.getSellerId());
             statement.setString(2, location.getStreet());
             statement.setString(3, location.getNeighborhood());
-            statement.setString(4, String.valueOf(location.getNumberHouse()));
+            statement.setInt(4, location.getNumberHouse());
             statement.setString(5, location.getCity());
             statement.setInt(6, location.getLocationId());
 
@@ -136,10 +136,10 @@ public class LocationDAO {
                     int sellerId = resultSet.getInt("seller_id");
                     String street = resultSet.getString("street");
                     String neighborhood = resultSet.getString("neighborhood");
-                    String numberHouse = resultSet.getString("number_house");
+                    int numberHouse = resultSet.getInt("number_house");
                     String city = resultSet.getString("city");
 
-                    location = new Location();
+                    location = new Location(locationId, sellerId, street, neighborhood, city, numberHouse);
                 }
             }
         }

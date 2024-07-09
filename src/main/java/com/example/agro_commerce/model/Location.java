@@ -1,23 +1,31 @@
 package com.example.agro_commerce.model;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Location {
-    private Integer LocationId;
+    private Integer locationId;
     private Integer sellerId;
-    private String Street;
-    private String Neighborhood;
+    private String street;
+    private String neighborhood;
     private String city;
-    private Integer NumberHouse;
+    private Integer numberHouse;
 
-
+    @Override
+    public String toString() {
+        return "Location{" +
+                "locationId=" + locationId +
+                ", sellerId=" + sellerId +
+                ", street='" + street + '\'' +
+                ", neighborhood='" + neighborhood + '\'' +
+                ", city='" + city + '\'' +
+                ", numberHouse=" + numberHouse +
+                '}';
+    }
 }

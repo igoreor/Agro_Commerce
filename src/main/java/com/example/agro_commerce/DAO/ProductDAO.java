@@ -2,6 +2,7 @@ package com.example.agro_commerce.dao;
 
 import com.example.agro_commerce.model.Product;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class ProductDAO {
     }
 
     public boolean insertProduct(Product product) throws SQLException {
-        String sql = "INSERT INTO product (type_product, name_product, description_product) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO product (type_product, name_product, value_product, description_product) VALUES (?, ?, ?, ?)";
         boolean rowInserted = false;
 
         connect();
@@ -44,7 +45,8 @@ public class ProductDAO {
         try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
             statement.setString(1, product.getType());
             statement.setString(2, product.getName());
-            statement.setString(3, product.getDescription());
+            statement.setBigDecimal(3, product.getValue());
+            statement.setString(4, product.getDescription());
 
             rowInserted = statement.executeUpdate() > 0;
         }
@@ -67,9 +69,10 @@ public class ProductDAO {
                 int productId = resultSet.getInt("product_id");
                 String typeProduct = resultSet.getString("type_product");
                 String nameProduct = resultSet.getString("name_product");
+                BigDecimal valueProduct = resultSet.getBigDecimal("value_product");
                 String descriptionProduct = resultSet.getString("description_product");
 
-                Product product = new Product();
+                Product product = new Product(productId, typeProduct, nameProduct, valueProduct, descriptionProduct);
                 listProduct.add(product);
             }
         }
@@ -97,7 +100,7 @@ public class ProductDAO {
     }
 
     public boolean updateProduct(Product product) throws SQLException {
-        String sql = "UPDATE product SET type_product = ?, name_product = ?, description_product = ? WHERE product_id = ?";
+        String sql = "UPDATE product SET type_product = ?, name_product = ?, value_product = ?, description_product = ? WHERE product_id = ?";
         boolean rowUpdated = false;
 
         connect();
@@ -105,11 +108,12 @@ public class ProductDAO {
         try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
             statement.setString(1, product.getType());
             statement.setString(2, product.getName());
-            statement.setString(3, product.getDescription());
+            statement.setBigDecimal(3, product.getValue());
+            statement.setString(4, product.getDescription());
+            statement.setInt(5, product.getProductId());
 
             rowUpdated = statement.executeUpdate() > 0;
         }
-
 
         disconnect();
 
@@ -129,9 +133,10 @@ public class ProductDAO {
                 if (resultSet.next()) {
                     String typeProduct = resultSet.getString("type_product");
                     String nameProduct = resultSet.getString("name_product");
+                    BigDecimal valueProduct = resultSet.getBigDecimal("value_product");
                     String descriptionProduct = resultSet.getString("description_product");
 
-                    product = new Product();
+                    product = new Product(productId, typeProduct, nameProduct, valueProduct, descriptionProduct);
                 }
             }
         }

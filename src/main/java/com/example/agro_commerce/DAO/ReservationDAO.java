@@ -140,7 +140,7 @@ public class ReservationDAO {
                     Date reservationIn = resultSet.getDate("reservation_in");
                     BigDecimal totalPrice = resultSet.getBigDecimal("total_price");
 
-                    reservation = new Reservation();
+                    reservation = new Reservation(reservationId, buyerId,sellerId,productId,totalPrice, reservationIn.toLocalDate());
                 }
             }
         }
