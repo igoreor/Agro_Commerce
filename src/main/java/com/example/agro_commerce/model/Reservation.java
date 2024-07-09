@@ -19,7 +19,7 @@ public class Reservation {
     private Integer sellerId;
     private Integer productId;
     private BigDecimal totalPrice;
-    private LocalDate reservationDateTime;
+    private LocalDate reservationIn;
 
     @Override
     public String toString() {
@@ -29,7 +29,7 @@ public class Reservation {
                 ", sellerId=" + sellerId +
                 ", productId=" + productId +
                 ", totalPrice=" + totalPrice +
-                ", reservationDateTime=" + reservationDateTime +
+                ", reservationDateTime=" +  reservationIn +
                 '}';
     }
 }

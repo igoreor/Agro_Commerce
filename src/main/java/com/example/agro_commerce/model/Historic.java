@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.security.PrivateKey;
 import java.time.LocalDate;
 
 @Getter
@@ -14,9 +15,10 @@ import java.time.LocalDate;
 
 public class Historic {
     private Integer historicId;
+    private Integer Reservation;
     private Integer userId;
     private Integer sellerId;
-    private LocalDate bought_in;
+    private LocalDate boughtIn;
 
     @Override
     public String toString() {
@@ -24,7 +26,7 @@ public class Historic {
                 "historicId=" + historicId +
                 ", userId=" + userId +
                 ", sellerId=" + sellerId +
-                ", bought_in=" + bought_in +
+                ", bought_in=" + boughtIn +
                 '}';
     }
 

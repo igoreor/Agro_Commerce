@@ -1,4 +1,4 @@
-package com.example.agro_commerce.dao;
+package com.example.agro_commerce.DAO;
 
 import com.example.agro_commerce.model.User;
 
@@ -44,7 +44,7 @@ public class UserDAO {
         try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getUserName());
-            statement.setString(3, String.valueOf(user.getPassword()));
+            statement.setString(3, String.valueOf(user.getPassword())); // Use um método seguro para lidar com senhas
             statement.setDate(4, Date.valueOf(user.getBirthDate()));
             statement.setString(5, user.getSex());
 
@@ -73,12 +73,12 @@ public class UserDAO {
                 Date birthDate = resultSet.getDate("birthDate");
                 String sex = resultSet.getString("sex");
 
-                User user = new User(userEmail, userName, password, birthDate, sex);
+                User user = new User(userId, userEmail, userName, password,  sex,birthDate.toLocalDate());
                 listUser.add(user);
             }
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return listUser;
     }
@@ -93,9 +93,9 @@ public class UserDAO {
             statement.setInt(1, user.getUserId());
 
             rowDeleted = statement.executeUpdate() > 0;
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return rowDeleted;
     }
@@ -115,9 +115,9 @@ public class UserDAO {
             statement.setInt(6, user.getUserId());
 
             rowUpdated = statement.executeUpdate() > 0;
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return rowUpdated;
     }
@@ -139,12 +139,12 @@ public class UserDAO {
                     Date birthDate = resultSet.getDate("birthDate");
                     String sex = resultSet.getString("sex");
 
-                    user = new User(userEmail, userName, password, birthDate, sex);
+                    new User(userId, userEmail, userName, password,  sex,birthDate.toLocalDate());
                 }
             }
+        } finally {
+            disconnect();
         }
-
-        disconnect();
 
         return user;
     }

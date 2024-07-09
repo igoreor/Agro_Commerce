@@ -1,38 +1,30 @@
 package com.example.agro_commerce.model;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
-
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class User {
     private Integer userId;
-    private String userName;
-    private String email;
-    private Integer password;
-    private String sex;
-    private LocalDate birthDate;
-
-    public User(String userEmail, String userName, String password, Date birthDate, String sex) {
-    }
+    @NonNull private String userName;
+    @NonNull private String email;
+    @NonNull private String password;
+    @NonNull private String sex;
+    @NonNull private LocalDate birthDate;
 
     @Override
     public String toString() {
         return "User{" +
-                "userId: " + userId +
-                ", user name: " + userName +
-                ", email: " + email +
-                ", password: " + password +
-                ", sex: " + sex +
-                "birth of date: " + birthDate+
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", email='" + email + '\'' +
+                ", sex='" + sex + '\'' +
+                ", birthDate=" + birthDate +
                 '}';
     }
 }

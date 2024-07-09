@@ -1,4 +1,4 @@
-package com.example.agro_commerce.dao;
+package com.example.agro_commerce.DAO;
 
 import com.example.agro_commerce.model.Location;
 
@@ -21,7 +21,7 @@ public class LocationDAO {
     protected void connect() throws SQLException {
         if (jdbcConnection == null || jdbcConnection.isClosed()) {
             try {
-                Class.forName("org.postgresql.Driver");
+                Class.forName("DRIVE_CLASS_NAME");
             } catch (ClassNotFoundException e) {
                 throw new SQLException(e);
             }
