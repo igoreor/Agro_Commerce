@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 
@@ -19,6 +20,9 @@ public class User {
     private Integer password;
     private String sex;
     private LocalDate birthDate;
+
+    public User(String userEmail, String userName, String password, Date birthDate, String sex) {
+    }
 
     @Override
     public String toString() {

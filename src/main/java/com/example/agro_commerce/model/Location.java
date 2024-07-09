@@ -14,6 +14,10 @@ import java.time.LocalDate;
 public class Location {
     private Integer LocationId;
     private Integer sellerId;
+    private String Street;
+    private String Neighborhood;
+    private String city;
+    private Integer NumberHouse;
 
 
 }
