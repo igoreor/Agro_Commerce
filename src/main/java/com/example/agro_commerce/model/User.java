@@ -1,7 +1,6 @@
 package com.example.agro_commerce.model;
 
 import lombok.*;
-
 import java.time.LocalDate;
 
 @Getter
