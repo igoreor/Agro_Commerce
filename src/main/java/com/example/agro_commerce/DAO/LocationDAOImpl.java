@@ -1,158 +1,83 @@
 package com.example.agro_commerce.DAO;
 
 import com.example.agro_commerce.model.Location;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class LocationDAOImpl implements LocationDAO {
-    private final String jdbcURL;
-    private final String jdbcUsername;
-    private final String jdbcPassword;
-    private Connection jdbcConnection;
 
-    public LocationDAOImpl(String jdbcURL, String jdbcUsername, String jdbcPassword) {
-        this.jdbcURL = jdbcURL;
-        this.jdbcUsername = jdbcUsername;
-        this.jdbcPassword = jdbcPassword;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
-    protected void connect() throws SQLException {
-        if (jdbcConnection == null || jdbcConnection.isClosed()) {
-            try {
-                Class.forName("DRIVE_CLASS_NAME");
-            } catch (ClassNotFoundException e) {
-                throw new SQLException(e);
-            }
-            jdbcConnection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
-        }
-    }
-
-    protected void disconnect() throws SQLException {
-        if (jdbcConnection != null && !jdbcConnection.isClosed()) {
-            jdbcConnection.close();
-        }
+    @Autowired
+    public LocationDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public boolean insertLocation(Location location) throws SQLException {
+    public boolean insertLocation(Location location) {
         String sql = "INSERT INTO locationn (seller_id, street, neighborhood, number_house, city) VALUES (?, ?, ?, ?, ?)";
-        boolean rowInserted = false;
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, location.getSellerId(), location.getStreet(), location.getNeighborhood(), location.getNumberHouse(), location.getCity());
+            return rowsAffected > 0;
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, location.getSellerId());
-            statement.setString(2, location.getStreet());
-            statement.setString(3, location.getNeighborhood());
-            statement.setInt(4, location.getNumberHouse());
-            statement.setString(5, location.getCity());
-
-            rowInserted = statement.executeUpdate() > 0;
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return false;
         }
-
-        return rowInserted;
     }
 
     @Override
-    public List<Location> listAllLocations() throws SQLException {
-        List<Location> listLocation = new ArrayList<>();
+    public List<Location> listAllLocations() {
         String sql = "SELECT * FROM locationn";
+        try {
+            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Location.class));
+        } catch (Exception e) {
 
-        connect();
-
-        try (Statement statement = jdbcConnection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                int locationId = resultSet.getInt("location_id");
-                int sellerId = resultSet.getInt("seller_id");
-                String street = resultSet.getString("street");
-                String neighborhood = resultSet.getString("neighborhood");
-                int numberHouse = resultSet.getInt("number_house");
-                String city = resultSet.getString("city");
-
-                Location location = new Location(locationId, sellerId, street, neighborhood, city, numberHouse);
-                listLocation.add(location);
-            }
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return null;
         }
-
-        return listLocation;
     }
 
     @Override
-    public boolean updateLocation(Location location) throws SQLException {
+    public boolean updateLocation(Location location) {
         String sql = "UPDATE locationn SET seller_id = ?, street = ?, neighborhood = ?, number_house = ?, city = ? WHERE location_id = ?";
-        boolean rowUpdated = false;
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, location.getSellerId(), location.getStreet(), location.getNeighborhood(), location.getNumberHouse(), location.getCity(), location.getLocationId());
+            return rowsAffected > 0;
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, location.getSellerId());
-            statement.setString(2, location.getStreet());
-            statement.setString(3, location.getNeighborhood());
-            statement.setInt(4, location.getNumberHouse());
-            statement.setString(5, location.getCity());
-            statement.setInt(6, location.getLocationId());
-
-            rowUpdated = statement.executeUpdate() > 0;
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return false;
         }
-
-        return rowUpdated;
     }
 
     @Override
-    public boolean deleteLocation(Location location) throws SQLException {
+    public boolean deleteLocation(Location location) {
         String sql = "DELETE FROM locationn WHERE location_id = ?";
-        boolean rowDeleted = false;
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, location.getLocationId());
+            return rowsAffected > 0;
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, location.getLocationId());
-
-            rowDeleted = statement.executeUpdate() > 0;
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return false;
         }
-
-        return rowDeleted;
     }
 
     @Override
-    public Location getLocation(int locationId) throws SQLException {
-        Location location = null;
+    public Location getLocation(int locationId) {
         String sql = "SELECT * FROM locationn WHERE location_id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Location.class), locationId);
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, locationId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int sellerId = resultSet.getInt("seller_id");
-                    String street = resultSet.getString("street");
-                    String neighborhood = resultSet.getString("neighborhood");
-                    int numberHouse = resultSet.getInt("number_house");
-                    String city = resultSet.getString("city");
-
-                    location = new Location(locationId, sellerId, street, neighborhood, city, numberHouse);
-                }
-            }
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return null;
         }
-
-        return location;
     }
 }

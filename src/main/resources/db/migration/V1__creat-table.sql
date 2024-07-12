@@ -1,5 +1,5 @@
 CREATE TABLE userr (
-    user_id SERIAL NOT NULL,
+    user_id SERIAL  NOT NULL,
     user_email varchar(50) NOT NULL,
     user_name varchar(100) NOT NULL,
     password varchar(16) NOT NULL,

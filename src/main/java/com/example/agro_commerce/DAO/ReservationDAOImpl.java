@@ -1,154 +1,90 @@
 package com.example.agro_commerce.DAO;
 
 import com.example.agro_commerce.model.Reservation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class ReservationDAOImpl implements  ReservationDAO{
-    private final String jdbcURL;
-    private final String jdbcUsername;
-    private final String jdbcPassword;
-    private Connection jdbcConnection;
+public class ReservationDAOImpl implements ReservationDAO {
 
-    public ReservationDAOImpl(String jdbcURL, String jdbcUsername, String jdbcPassword) {
-        this.jdbcURL = jdbcURL;
-        this.jdbcUsername = jdbcUsername;
-        this.jdbcPassword = jdbcPassword;
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public ReservationDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    protected void connect() throws SQLException {
-        if (jdbcConnection == null || jdbcConnection.isClosed()) {
-            try {
-                Class.forName("DRIVE_CLASS_NAME");
-            } catch (ClassNotFoundException e) {
-                throw new SQLException(e);
-            }
-            jdbcConnection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
-        }
-    }
-
-    protected void disconnect() throws SQLException {
-        if (jdbcConnection != null && !jdbcConnection.isClosed()) {
-            jdbcConnection.close();
-        }
-    }
-
-    public boolean insertReservation(Reservation reservation) throws SQLException {
+    @Override
+    public boolean insertReservation(Reservation reservation) {
         String sql = "INSERT INTO reservation (buyer_id, seller_id, product_id, reservation_in, total_price) VALUES (?, ?, ?, ?, ?)";
-        boolean rowInserted = false;
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, reservation.getBuyerId(), reservation.getSellerId(),
+                    reservation.getProductId(), Date.valueOf(reservation.getReservationIn()), reservation.getTotalPrice());
+            return rowsAffected > 0;
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, reservation.getBuyerId());
-            statement.setInt(2, reservation.getSellerId());
-            statement.setInt(3, reservation.getProductId());
-            statement.setDate(4, Date.valueOf(reservation.getReservationIn()));
-            statement.setBigDecimal(5, reservation.getTotalPrice());
-
-            rowInserted = statement.executeUpdate() > 0;
+            e.printStackTrace();
+            return false;
         }
-
-        disconnect();
-
-        return rowInserted;
     }
 
-    public List<Reservation> listAllReservations() throws SQLException {
-        List<Reservation> listReservation = new ArrayList<>();
+    @Override
+    public List<Reservation> listAllReservations() {
         String sql = "SELECT * FROM reservation";
+        try {
+            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Reservation.class));
+        } catch (Exception e) {
 
-        connect();
-
-        try (Statement statement = jdbcConnection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                int reservationId = resultSet.getInt("reservation_id");
-                int buyerId = resultSet.getInt("buyer_id");
-                int sellerId = resultSet.getInt("seller_id");
-                int productId = resultSet.getInt("product_id");
-                Date reservationIn = resultSet.getDate("reservation_in");
-                BigDecimal totalPrice = resultSet.getBigDecimal("total_price");
-
-                Reservation reservation = new Reservation();
-                listReservation.add(reservation);
-            }
+            e.printStackTrace();
+            return null;
         }
-
-        disconnect();
-
-        return listReservation;
     }
 
-    public boolean deleteReservation(Reservation reservation) throws SQLException {
-        String sql = "DELETE FROM reservation WHERE reservation_id = ?";
-        boolean rowDeleted = false;
-
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, reservation.getReservationId());
-
-            rowDeleted = statement.executeUpdate() > 0;
-        }
-
-        disconnect();
-
-        return rowDeleted;
-    }
-
-    public boolean updateReservation(Reservation reservation) throws SQLException {
+    @Override
+    public boolean updateReservation(Reservation reservation) {
         String sql = "UPDATE reservation SET buyer_id = ?, seller_id = ?, product_id = ?, reservation_in = ?, total_price = ? WHERE reservation_id = ?";
-        boolean rowUpdated = false;
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, reservation.getBuyerId(), reservation.getSellerId(),
+                    reservation.getProductId(), Date.valueOf(reservation.getReservationIn()), reservation.getTotalPrice(),
+                    reservation.getReservationId());
+            return rowsAffected > 0;
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, reservation.getBuyerId());
-            statement.setInt(2, reservation.getSellerId());
-            statement.setInt(3, reservation.getProductId());
-            statement.setDate(4, Date.valueOf(reservation.getReservationIn()));
-            statement.setBigDecimal(5, reservation.getTotalPrice());
-            statement.setInt(6, reservation.getReservationId());
-
-            rowUpdated = statement.executeUpdate() > 0;
+            e.printStackTrace();
+            return false;
         }
-
-        disconnect();
-
-        return rowUpdated;
     }
 
-    public Reservation getReservation(int reservationId) throws SQLException {
-        Reservation reservation = null;
-        String sql = "SELECT * FROM reservation WHERE reservation_id = ?";
+    @Override
+    public boolean deleteReservation(Reservation reservation) {
+        String sql = "DELETE FROM reservation WHERE reservation_id = ?";
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, reservation.getReservationId());
+            return rowsAffected > 0;
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, reservationId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int buyerId = resultSet.getInt("buyer_id");
-                    int sellerId = resultSet.getInt("seller_id");
-                    int productId = resultSet.getInt("product_id");
-                    Date reservationIn = resultSet.getDate("reservation_in");
-                    BigDecimal totalPrice = resultSet.getBigDecimal("total_price");
-
-                    reservation = new Reservation(reservationId, buyerId,sellerId,productId,totalPrice, reservationIn.toLocalDate());
-                }
-            }
+            e.printStackTrace();
+            return false;
         }
+    }
 
-        disconnect();
+    @Override
+    public Reservation getReservation(int reservationId) {
+        String sql = "SELECT * FROM reservation WHERE reservation_id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Reservation.class), reservationId);
+        } catch (Exception e) {
 
-        return reservation;
+            e.printStackTrace();
+            return null;
+        }
     }
 }

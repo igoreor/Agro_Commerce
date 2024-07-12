@@ -1,165 +1,113 @@
 package com.example.agro_commerce.DAO;
 
+
+import com.example.agro_commerce.expecption.DAOException;
 import com.example.agro_commerce.model.User;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+public class UserDAOImpl implements UserDAO {
 
-public class UserDAOImpl {
+    private static final Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
-    @Value("${jdbc.url}")
-    private String jdbcURL;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Value("${jdbc.username}")
-    private String jdbcUsername;
-
-    @Value("${jdbc.password}")
-    private String jdbcPassword;
-
-    private Connection jdbcConnection;
-
-    @PostConstruct
-    public void init() throws SQLException, ClassNotFoundException {
-        connect();
+    @Autowired
+    public UserDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    protected void connect() throws SQLException {
-        if (jdbcConnection == null || jdbcConnection.isClosed()) {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException e) {
-                throw new SQLException(e);
-            }
-            jdbcConnection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+    private final RowMapper<User> userRowMapper = new RowMapper<>() {
+        @Override
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            int userId = rs.getInt("user_id");
+            String userName = rs.getString("user_name");
+            String email = rs.getString("email");
+            String password = rs.getString("password");
+            String sex = rs.getString("sex");
+            LocalDate birthDate = rs.getDate("birth_date").toLocalDate();
+            return new User(userId, userName, email, password, sex, birthDate);
+        }
+    };
+
+    @Override
+    public boolean insertUser(User user) {
+        String sql = "INSERT INTO userr (user_name, email, password, sex, birth_date) VALUES (?, ?, ?, ?, ?)";
+        try {
+            int result = jdbcTemplate.update(sql,
+                    user.getUserName(),
+                    user.getEmail(),
+                    user.getPassword(),
+                    user.getSex(),
+                    Date.valueOf(user.getBirthDate()));
+            return result > 0;
+        } catch (DataAccessException e) {
+            logger.error("Error inserting user: {}", e.getMessage());
+            throw new DAOException("Error inserting user", e);
         }
     }
 
-    protected void disconnect() throws SQLException {
-        if (jdbcConnection != null && !jdbcConnection.isClosed()) {
-            jdbcConnection.close();
+    @Override
+    public List<User> listAllUsers() {
+        String sql = "SELECT * FROM userr";
+        try {
+            return jdbcTemplate.query(sql, userRowMapper);
+        } catch (DataAccessException e) {
+            logger.error("Error listing all users: {}", e.getMessage());
+            throw new DAOException("Error listing all users", e);
         }
     }
 
-    public boolean insertUser(User user) throws SQLException {
-        String sql = "INSERT INTO users (user_name, email, password, sex, birth_date) VALUES (?, ?, ?, ?, ?)";
-        boolean rowInserted = false;
-
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setString(1, user.getUserName());
-            statement.setString(2, user.getEmail());
-            statement.setString(3, user.getPassword());
-            statement.setString(4, user.getSex());
-            statement.setDate(5, Date.valueOf(user.getBirthDate()));
-
-            rowInserted = statement.executeUpdate() > 0;
+    @Override
+    public boolean deleteUser(User user) {
+        String sql = "DELETE FROM userr WHERE user_id = ?";
+        try {
+            int result = jdbcTemplate.update(sql, user.getUserId());
+            return result > 0;
+        } catch (DataAccessException e) {
+            logger.error("Error deleting user: {}", e.getMessage());
+            throw new DAOException("Error deleting user", e);
         }
-
-        disconnect();
-
-        return rowInserted;
     }
 
-    public List<User> listAllUsers() throws SQLException {
-        List<User> listUser = new ArrayList<>();
-        String sql = "SELECT * FROM users";
-
-        connect();
-
-        try (Statement statement = jdbcConnection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                int userId = resultSet.getInt("user_id");
-                String userName = resultSet.getString("user_name");
-                String email = resultSet.getString("email");
-                String password = resultSet.getString("password");
-                String sex = resultSet.getString("sex");
-                LocalDate birthDate = resultSet.getDate("birth_date").toLocalDate();
-
-                User user = new User(userId, userName, email, password, sex, birthDate);
-                listUser.add(user);
-            }
+    @Override
+    public boolean updateUser(User user) {
+        String sql = "UPDATE userr SET user_name = ?, email = ?, password = ?, sex = ?, birth_date = ? WHERE user_id = ?";
+        try {
+            int result = jdbcTemplate.update(sql,
+                    user.getUserName(),
+                    user.getEmail(),
+                    user.getPassword(),
+                    user.getSex(),
+                    Date.valueOf(user.getBirthDate()),
+                    user.getUserId());
+            return result > 0;
+        } catch (DataAccessException e) {
+            logger.error("Error updating user: {}", e.getMessage());
+            throw new DAOException("Error updating user", e);
         }
-
-        disconnect();
-
-        return listUser;
     }
 
-    public boolean deleteUser(User user) throws SQLException {
-        String sql = "DELETE FROM users WHERE user_id = ?";
-        boolean rowDeleted = false;
-
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, user.getUserId());
-
-            rowDeleted = statement.executeUpdate() > 0;
+    @Override
+    public User getUser(int userId) {
+        String sql = "SELECT * FROM userr WHERE user_id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, userRowMapper, userId);
+        } catch (DataAccessException e) {
+            logger.error("Error getting user: {}", e.getMessage());
+            throw new DAOException("Error getting user", e);
         }
-
-        disconnect();
-
-        return rowDeleted;
-    }
-
-    public boolean updateUser(User user) throws SQLException {
-        String sql = "UPDATE users SET user_name = ?, email = ?, password = ?, sex = ?, birth_date = ? WHERE user_id = ?";
-        boolean rowUpdated = false;
-
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setString(1, user.getUserName());
-            statement.setString(2, user.getEmail());
-            statement.setString(3, user.getPassword());
-            statement.setString(4, user.getSex());
-            statement.setDate(5, Date.valueOf(user.getBirthDate()));
-            statement.setInt(6, user.getUserId());
-
-            rowUpdated = statement.executeUpdate() > 0;
-        }
-
-        disconnect();
-
-        return rowUpdated;
-    }
-
-    public User getUser(int userId) throws SQLException {
-        User user = null;
-        String sql = "SELECT * FROM users WHERE user_id = ?";
-
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, userId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    String userName = resultSet.getString("user_name");
-                    String email = resultSet.getString("email");
-                    String password = resultSet.getString("password");
-                    String sex = resultSet.getString("sex");
-                    LocalDate birthDate = resultSet.getDate("birth_date").toLocalDate();
-
-                    user = new User(userId, userName, email, password, sex, birthDate);
-                }
-            }
-        }
-
-        disconnect();
-
-        return user;
     }
 }

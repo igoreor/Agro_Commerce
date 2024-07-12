@@ -1,170 +1,108 @@
 package com.example.agro_commerce.DAO;
 
 import com.example.agro_commerce.model.Assessment;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class AssessmentDAOImpl implements AssessmentDAO {
-    private final String jdbcURL;
-    private final String jdbcUsername;
-    private final String jdbcPassword;
-    private Connection jdbcConnection;
 
-    public AssessmentDAOImpl(String jdbcURL, String jdbcUsername, String jdbcPassword) {
-        this.jdbcURL = jdbcURL;
-        this.jdbcUsername = jdbcUsername;
-        this.jdbcPassword = jdbcPassword;
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public AssessmentDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    protected void connect() throws SQLException {
-        if (jdbcConnection == null || jdbcConnection.isClosed()) {
-            try {
-                Class.forName("DRIVE_CLASS_NAME");
-            } catch (ClassNotFoundException e) {
-                throw new SQLException(e);
-            }
-            jdbcConnection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+    private final RowMapper<Assessment> assessmentRowMapper = new RowMapper<>() {
+        @Override
+        public Assessment mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Assessment assessment = new Assessment();
+            assessment.setAssessmentId(rs.getInt("assessment_id"));
+            assessment.setBuyerId(rs.getInt("user_id"));
+            assessment.setSellerId(rs.getInt("seller_id"));
+            assessment.setAssessment(rs.getDouble("assessment"));
+            assessment.setAssessmentDate(rs.getTimestamp("assessment_date").toLocalDateTime().toLocalDate());
+            return assessment;
         }
-    }
-
-    protected void disconnect() throws SQLException {
-        if (jdbcConnection != null && !jdbcConnection.isClosed()) {
-            jdbcConnection.close();
-        }
-    }
+    };
 
     @Override
-    public boolean insertAssessment(Assessment assessment) throws SQLException {
+    public boolean insertAssessment(Assessment assessment) {
         String sql = "INSERT INTO assessment (user_id, seller_id, assessment, assessment_date) VALUES (?, ?, ?, ?)";
-        boolean rowInserted = false;
+        try {
+            int result = jdbcTemplate.update(sql,
+                    assessment.getBuyerId(),
+                    assessment.getSellerId(),
+                    assessment.getAssessment(),
+                    java.sql.Timestamp.valueOf(assessment.getAssessmentDate().atStartOfDay()));
+            return result > 0;
+        } catch (DataAccessException e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setInt(1, assessment.getBuyerId());
-            statement.setInt(2, assessment.getSellerId());
-            statement.setDouble(3, assessment.getAssessment());
-            statement.setTimestamp(4, java.sql.Timestamp.valueOf(assessment.getAssessmentDate().atStartOfDay()));
-
-            rowInserted = statement.executeUpdate() > 0;
-
-            ResultSet generatedKeys = statement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                assessment.setAssessmentId(generatedKeys.getInt(1));
-            }
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return false;
         }
-
-        return rowInserted;
     }
 
     @Override
-    public List<Assessment> listAllAssessments() throws SQLException {
-        List<Assessment> listAssessments = new ArrayList<>();
+    public List<Assessment> listAllAssessments() {
         String sql = "SELECT * FROM assessment";
+        try {
+            return jdbcTemplate.query(sql, assessmentRowMapper);
+        } catch (DataAccessException e) {
 
-        connect();
-
-        try (Statement statement = jdbcConnection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                int assessmentId = resultSet.getInt("assessment_id");
-                int userId = resultSet.getInt("user_id");
-                int sellerId = resultSet.getInt("seller_id");
-                double assessmentValue = resultSet.getDouble("assessment");
-                java.sql.Timestamp assessmentDate = resultSet.getTimestamp("assessment_date");
-
-                Assessment assessment = new Assessment();
-                assessment.setAssessmentId(assessmentId);
-                assessment.setBuyerId(userId);
-                assessment.setSellerId(sellerId);
-                assessment.setAssessment(assessmentValue);
-                assessment.setAssessmentDate(assessmentDate.toLocalDateTime().toLocalDate());
-
-                listAssessments.add(assessment);
-            }
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return List.of();
         }
-
-        return listAssessments;
     }
 
     @Override
-    public boolean updateAssessment(Assessment assessment) throws SQLException {
+    public boolean updateAssessment(Assessment assessment) {
         String sql = "UPDATE assessment SET user_id = ?, seller_id = ?, assessment = ?, assessment_date = ? WHERE assessment_id = ?";
-        boolean rowUpdated = false;
+        try {
+            int result = jdbcTemplate.update(sql,
+                    assessment.getBuyerId(),
+                    assessment.getSellerId(),
+                    assessment.getAssessment(),
+                    java.sql.Timestamp.valueOf(assessment.getAssessmentDate().atStartOfDay()),
+                    assessment.getAssessmentId());
+            return result > 0;
+        } catch (DataAccessException e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, assessment.getBuyerId());
-            statement.setInt(2, assessment.getSellerId());
-            statement.setDouble(3, assessment.getAssessment());
-            statement.setTimestamp(4, java.sql.Timestamp.valueOf(assessment.getAssessmentDate().atStartOfDay()));
-            statement.setInt(5, assessment.getAssessmentId());
-
-            rowUpdated = statement.executeUpdate() > 0;
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return false;
         }
-
-        return rowUpdated;
     }
 
     @Override
-    public boolean deleteAssessment(Assessment assessment) throws SQLException {
+    public boolean deleteAssessment(Assessment assessment) {
         String sql = "DELETE FROM assessment WHERE assessment_id = ?";
-        boolean rowDeleted = false;
+        try {
+            int result = jdbcTemplate.update(sql, assessment.getAssessmentId());
+            return result > 0;
+        } catch (DataAccessException e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, assessment.getAssessmentId());
-
-            rowDeleted = statement.executeUpdate() > 0;
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return false;
         }
-
-        return rowDeleted;
     }
 
     @Override
-    public Assessment getAssessment(int assessmentId) throws SQLException {
-        Assessment assessment = null;
+    public Assessment getAssessment(int assessmentId) {
         String sql = "SELECT * FROM assessment WHERE assessment_id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, assessmentRowMapper, assessmentId);
+        } catch (DataAccessException e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, assessmentId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int userId = resultSet.getInt("user_id");
-                    int sellerId = resultSet.getInt("seller_id");
-                    double assessmentValue = resultSet.getDouble("assessment");
-                    java.sql.Timestamp assessmentDate = resultSet.getTimestamp("assessment_date");
-
-                    assessment = new Assessment();
-                    assessment.setAssessmentId(assessmentId);
-                    assessment.setBuyerId(userId);
-                    assessment.setSellerId(sellerId);
-                    assessment.setAssessment(assessmentValue);
-                    assessment.setAssessmentDate(assessmentDate.toLocalDateTime().toLocalDate());
-                }
-            }
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return null;
         }
-
-        return assessment;
     }
 }

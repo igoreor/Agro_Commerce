@@ -1,150 +1,86 @@
 package com.example.agro_commerce.DAO;
 
 import com.example.agro_commerce.model.Contact;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class ContactDAOImpl implements ContactDAO {
-    private final String jdbcURL;
-    private final String jdbcUsername;
-    private final String jdbcPassword;
-    private Connection jdbcConnection;
 
-    public ContactDAOImpl(String jdbcURL, String jdbcUsername, String jdbcPassword) {
-        this.jdbcURL = jdbcURL;
-        this.jdbcUsername = jdbcUsername;
-        this.jdbcPassword = jdbcPassword;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
-    protected void connect() throws SQLException {
-        if (jdbcConnection == null || jdbcConnection.isClosed()) {
-            try {
-                Class.forName("DRIVE_CLASS_NAME");
-            } catch (ClassNotFoundException e) {
-                throw new SQLException(e);
-            }
-            jdbcConnection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
-        }
-    }
-
-    protected void disconnect() throws SQLException {
-        if (jdbcConnection != null && !jdbcConnection.isClosed()) {
-            jdbcConnection.close();
-        }
+    @Autowired
+    public ContactDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public boolean insertContact(Contact contact) throws SQLException {
+    public boolean insertContact(Contact contact) {
         String sql = "INSERT INTO contacts (seller_id, buyer_id, phone_number) VALUES (?, ?, ?)";
-        boolean rowInserted = false;
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, contact.getSellerId(), contact.getBuyerId(), contact.getPhoneNumber());
+            if (rowsAffected > 0) {
 
-        connect();
+                return true;
+            }
+        } catch (Exception e) {
 
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, contact.getSellerId());
-            statement.setInt(2, contact.getBuyerId());
-            statement.setString(3, contact.getPhoneNumber());
-
-            rowInserted = statement.executeUpdate() > 0;
-        } finally {
-            disconnect();
+            e.printStackTrace();
         }
-
-        return rowInserted;
+        return false;
     }
 
     @Override
-    public List<Contact> listAllContacts() throws SQLException {
-        List<Contact> listContact = new ArrayList<>();
+    public List<Contact> listAllContacts() {
         String sql = "SELECT * FROM contacts";
+        try {
+            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Contact.class));
+        } catch (Exception e) {
 
-        connect();
-
-        try (Statement statement = jdbcConnection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                int contactId = resultSet.getInt("contact_id");
-                int sellerId = resultSet.getInt("seller_id");
-                int buyerId = resultSet.getInt("buyer_id");
-                String phoneNumber = resultSet.getString("phone_number");
-
-                Contact contact = new Contact(contactId, sellerId, buyerId, phoneNumber);
-                listContact.add(contact);
-            }
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return null;
         }
-
-        return listContact;
     }
 
     @Override
-    public boolean deleteContact(Contact contact) throws SQLException {
-        String sql = "DELETE FROM contacts WHERE contact_id = ?";
-        boolean rowDeleted = false;
-
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, contact.getContactId());
-
-            rowDeleted = statement.executeUpdate() > 0;
-        } finally {
-            disconnect();
-        }
-
-        return rowDeleted;
-    }
-
-    @Override
-    public boolean updateContact(Contact contact) throws SQLException {
+    public boolean updateContact(Contact contact) {
         String sql = "UPDATE contacts SET seller_id = ?, buyer_id = ?, phone_number = ? WHERE contact_id = ?";
-        boolean rowUpdated = false;
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, contact.getSellerId(), contact.getBuyerId(), contact.getPhoneNumber(), contact.getContactId());
+            return rowsAffected > 0;
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, contact.getSellerId());
-            statement.setInt(2, contact.getBuyerId());
-            statement.setString(3, contact.getPhoneNumber());
-            statement.setInt(4, contact.getContactId());
-
-            rowUpdated = statement.executeUpdate() > 0;
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return false;
         }
-
-        return rowUpdated;
     }
 
     @Override
-    public Contact getContact(int contactId) throws SQLException {
-        Contact contact = null;
-        String sql = "SELECT * FROM contacts WHERE contact_id = ?";
+    public boolean deleteContact(Contact contact) {
+        String sql = "DELETE FROM contacts WHERE contact_id = ?";
+        try {
+            int rowsAffected = jdbcTemplate.update(sql, contact.getContactId());
+            return rowsAffected > 0;
+        } catch (Exception e) {
 
-        connect();
-
-        try (PreparedStatement statement = jdbcConnection.prepareStatement(sql)) {
-            statement.setInt(1, contactId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int sellerId = resultSet.getInt("seller_id");
-                    int buyerId = resultSet.getInt("buyer_id");
-                    String phoneNumber = resultSet.getString("phone_number");
-
-                    contact = new Contact(contactId, sellerId, buyerId, phoneNumber);
-                }
-            }
-        } finally {
-            disconnect();
+            e.printStackTrace();
+            return false;
         }
+    }
 
-        return contact;
+    @Override
+    public Contact getContact(int contactId) {
+        String sql = "SELECT * FROM contacts WHERE contact_id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Contact.class), contactId);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
     }
 }
