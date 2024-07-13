@@ -22,29 +22,25 @@ public class UserDAOImpl implements UserDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
-    private final JdbcTemplate jdbcTemplate;
-
     @Autowired
-    public UserDAOImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private JdbcTemplate jdbcTemplate;
 
     private final RowMapper<User> userRowMapper = new RowMapper<>() {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             int userId = rs.getInt("user_id");
             String userName = rs.getString("user_name");
-            String email = rs.getString("email");
+            String email = rs.getString("user_email");
             String password = rs.getString("password");
             String sex = rs.getString("sex");
-            LocalDate birthDate = rs.getDate("birth_date").toLocalDate();
+            LocalDate birthDate = rs.getDate("birthDate").toLocalDate();
             return new User(userId, userName, email, password, sex, birthDate);
         }
     };
 
     @Override
     public boolean insertUser(User user) {
-        String sql = "INSERT INTO userr (user_name, email, password, sex, birth_date) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO userr (user_name, user_email, password, sex, birthDate) VALUES (?, ?, ?, ?, ?)";
         try {
             int result = jdbcTemplate.update(sql,
                     user.getUserName(),
@@ -54,7 +50,13 @@ public class UserDAOImpl implements UserDAO {
                     Date.valueOf(user.getBirthDate()));
             return result > 0;
         } catch (DataAccessException e) {
-            logger.error("Error inserting user: {}", e.getMessage());
+            logger.error("Error inserting user: SQL [{}] Params [{}, {}, {}, {}, {}]",
+                    sql,
+                    user.getUserName(),
+                    user.getEmail(),
+                    user.getPassword(),
+                    user.getSex(),
+                    Date.valueOf(user.getBirthDate()));
             throw new DAOException("Error inserting user", e);
         }
     }
@@ -84,7 +86,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        String sql = "UPDATE userr SET user_name = ?, email = ?, password = ?, sex = ?, birth_date = ? WHERE user_id = ?";
+        String sql = "UPDATE userr SET user_name = ?, user_email = ?, password = ?, sex = ?, birthDate = ? WHERE user_id = ?";
         try {
             int result = jdbcTemplate.update(sql,
                     user.getUserName(),

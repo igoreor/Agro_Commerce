@@ -3,9 +3,9 @@ package com.example.agro_commerce.controller;
 import com.example.agro_commerce.DAO.UserDAO;
 import com.example.agro_commerce.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -19,66 +19,64 @@ public class UserController {
         this.userDAO = userDAO;
     }
 
-    @PostMapping("/add")
-    public String addUser(@RequestBody User user) {
+    @PostMapping
+    public ResponseEntity<String> createUser(@RequestBody User user) {
         try {
             if (userDAO.insertUser(user)) {
-                return "User added successfully!";
+                return ResponseEntity.ok("User created successfully");
             } else {
-                return "Failed to add user.";
+                return ResponseEntity.status(500).body("Failed to create user");
             }
-        } catch (SQLException e) {
-            return "Error: " + e.getMessage();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error creating user: " + e.getMessage());
         }
     }
 
-    @GetMapping("/all")
-    public List<User> getAllUsers() {
+    @GetMapping
+    public ResponseEntity<List<User>> listAllUsers() {
         try {
-            return userDAO.listAllUsers();
-        } catch (SQLException e) {
-            // Handle exception accordingly
-            return null;
+            List<User> users = userDAO.listAllUsers();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
         }
     }
 
-    @PutMapping("/update")
-    public String updateUser(@RequestBody User user) {
-        try {
-            if (userDAO.updateUser(user)) {
-                return "User updated successfully!";
-            } else {
-                return "Failed to update user.";
-            }
-        } catch (SQLException e) {
-            return "Error: " + e.getMessage();
-        }
-    }
-
-    @DeleteMapping("/delete/{userId}")
-    public String deleteUser(@PathVariable int userId) {
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable int userId) {
         try {
             User user = userDAO.getUser(userId);
-            if (user != null) {
-                if (userDAO.deleteUser(user)) {
-                    return "User deleted successfully!";
-                } else {
-                    return "Failed to delete user.";
-                }
+            if (userDAO.deleteUser(user)) {
+                return ResponseEntity.ok("User deleted successfully");
             } else {
-                return "User not found.";
+                return ResponseEntity.status(500).body("Failed to delete user");
             }
-        } catch (SQLException e) {
-            return "Error: " + e.getMessage();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error deleting user: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<String> updateUser(@PathVariable int userId, @RequestBody User user) {
+        try {
+            user.setUserId(userId);
+            if (userDAO.updateUser(user)) {
+                return ResponseEntity.ok("User updated successfully");
+            } else {
+                return ResponseEntity.status(500).body("Failed to update user");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error updating user: " + e.getMessage());
         }
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable int userId) {
+    public ResponseEntity<User> getUser(@PathVariable int userId) {
         try {
-            return userDAO.getUser(userId);
-        } catch (SQLException e) {
-            return null;
+            User user = userDAO.getUser(userId);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
         }
     }
 }

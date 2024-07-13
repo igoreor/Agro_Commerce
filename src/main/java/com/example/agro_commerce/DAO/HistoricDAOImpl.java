@@ -11,75 +11,39 @@ import java.util.List;
 @Repository
 public class HistoricDAOImpl implements HistoricDAO {
 
-    private final JdbcTemplate jdbcTemplate;
-
     @Autowired
-    public HistoricDAOImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public boolean insertHistoric(Historic historic) {
         String sql = "INSERT INTO historic (reservation_id, user_id, seller_id, bought_in) VALUES (?, ?, ?, ?)";
-        try {
-            int rowsAffected = jdbcTemplate.update(sql, historic.getReservation(), historic.getUserId(), historic.getSellerId(), java.sql.Timestamp.valueOf(historic.getBoughtIn().atStartOfDay()));
-            if (rowsAffected > 0) {
-                return true;
-            }
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-        return false;
+        int rowsAffected = jdbcTemplate.update(sql, historic.getReservation(), historic.getUserId(), historic.getSellerId(), historic.getBoughtIn());
+        return rowsAffected > 0;
     }
 
     @Override
     public List<Historic> listAllHistorics() {
         String sql = "SELECT * FROM historic";
-        try {
-            return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Historic.class));
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return null;
-        }
+        return jdbcTemplate.query(sql, BeanPropertyRowMapper.newInstance(Historic.class));
     }
 
     @Override
     public boolean updateHistoric(Historic historic) {
         String sql = "UPDATE historic SET reservation_id = ?, user_id = ?, seller_id = ?, bought_in = ? WHERE historic_id = ?";
-        try {
-            int rowsAffected = jdbcTemplate.update(sql, historic.getReservation(), historic.getUserId(), historic.getSellerId(), java.sql.Timestamp.valueOf(historic.getBoughtIn().atStartOfDay()), historic.getHistoricId());
-            return rowsAffected > 0;
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return false;
-        }
+        int rowsAffected = jdbcTemplate.update(sql, historic.getReservation(), historic.getUserId(), historic.getSellerId(), historic.getBoughtIn(), historic.getHistoricId());
+        return rowsAffected > 0;
     }
 
     @Override
     public boolean deleteHistoric(Historic historic) {
         String sql = "DELETE FROM historic WHERE historic_id = ?";
-        try {
-            int rowsAffected = jdbcTemplate.update(sql, historic.getHistoricId());
-            return rowsAffected > 0;
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return false;
-        }
+        int rowsAffected = jdbcTemplate.update(sql, historic.getHistoricId());
+        return rowsAffected > 0;
     }
 
     @Override
     public Historic getHistoric(int historicId) {
         String sql = "SELECT * FROM historic WHERE historic_id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Historic.class), historicId);
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return null;
-        }
+        return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Historic.class), historicId);
     }
 }

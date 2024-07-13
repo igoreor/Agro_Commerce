@@ -11,12 +11,8 @@ import java.util.List;
 @Repository
 public class LocationDAOImpl implements LocationDAO {
 
-    private final JdbcTemplate jdbcTemplate;
-
     @Autowired
-    public LocationDAOImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public boolean insertLocation(Location location) {

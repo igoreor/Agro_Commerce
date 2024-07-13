@@ -11,12 +11,8 @@ import java.util.List;
 @Repository
 public class StockDAOImpl implements StockDAO {
 
-    private final JdbcTemplate jdbcTemplate;
-
     @Autowired
-    public StockDAOImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public boolean insertStock(Stock stock) {
