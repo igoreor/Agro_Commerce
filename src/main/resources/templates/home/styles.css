@@ -80,8 +80,8 @@ nav ul li:hover {
 
 .clickable-image {
     display: block;
-    width: 30px; /* ajuste conforme necessário */
-    height: 30px; /* ajuste conforme necessário */
+    width: 30px;
+    height: 30px;
     cursor: pointer;
 }
 
@@ -154,4 +154,22 @@ header {
 
 .header-bottom-side-right img {
     width: 115%;
+}
+.advertise-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #FFD700;
+    color: black;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.advertise-button:hover {
+    background-color: #FFC107;
 }

@@ -39,6 +39,9 @@ function cadastrar() {
     document.getElementById('msgSuccess').style.display = 'block';
     document.getElementById('msgError').style.display = 'none';
     limparCampos();
+
+
+    window.location.href = '../login/login.html';
   })
   .catch(error => {
     console.error('Erro:', error);
