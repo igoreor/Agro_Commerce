@@ -22,6 +22,7 @@ public class User {
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", email='" + email + '\'' +
+                ", password= ' " + password +
                 ", sex='" + sex + '\'' +
                 ", birthDate=" + birthDate +
                 '}';

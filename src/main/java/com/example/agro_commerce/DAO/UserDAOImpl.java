@@ -39,15 +39,26 @@ public class UserDAOImpl implements UserDAO {
     };
 
     @Override
+
     public boolean insertUser(User user) {
         String sql = "INSERT INTO userr (user_name, user_email, password, sex, birthDate) VALUES (?, ?, ?, ?, ?)";
         try {
+            // Validação dos campos obrigatórios
+            if (user.getUserName() == null || user.getUserName().isEmpty() ||
+                    user.getEmail() == null || user.getEmail().isEmpty() ||
+                    user.getPassword() == null || user.getPassword().isEmpty() ||
+                    user.getSex() == null || user.getSex().isEmpty() ||
+                    user.getBirthDate() == null) {
+                throw new IllegalArgumentException("Todos os campos são obrigatórios.");
+            }
+
             int result = jdbcTemplate.update(sql,
                     user.getUserName(),
                     user.getEmail(),
                     user.getPassword(),
                     user.getSex(),
                     Date.valueOf(user.getBirthDate()));
+
             return result > 0;
         } catch (DataAccessException e) {
             logger.error("Error inserting user: SQL [{}] Params [{}, {}, {}, {}, {}]",
@@ -56,10 +67,11 @@ public class UserDAOImpl implements UserDAO {
                     user.getEmail(),
                     user.getPassword(),
                     user.getSex(),
-                    Date.valueOf(user.getBirthDate()));
+                    Date.valueOf(user.getBirthDate()), e);
             throw new DAOException("Error inserting user", e);
         }
     }
+
 
     @Override
     public List<User> listAllUsers() {
