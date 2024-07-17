@@ -23,10 +23,11 @@ body {
     z-index: 99;
 }
 
-.navbar>div {
+.navbar > div {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .logo {
@@ -35,6 +36,53 @@ body {
 
 .logo span {
     color: white;
+}
+
+.buscar-box {
+    width: 400px;
+    height: 40px;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.buscar-box .lupa-buscar, .buscar-box .btn-fechar {
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.buscar-box .btn-fechar i {
+    font-size: 20px;
+    margin-left: 5px;
+}
+
+.buscar-box .lupa-buscar i {
+    font-size: 20px;
+}
+
+.buscar-box .input-buscar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - 80px);
+    height: 100%;
+}
+
+.buscar-box .input-buscar input {
+    width: 100%;
+    border: 0;
+    border-radius: 5px;
+    outline: 0;
+    font-size: 16px;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
 nav ul {
@@ -105,6 +153,8 @@ nav ul li:hover {
 
 header {
     background-image: radial-gradient(white, gray);
+    padding: 2rem 1rem;
+
 }
 
 .header-bottom-side {
@@ -155,6 +205,7 @@ header {
 .header-bottom-side-right img {
     width: 115%;
 }
+
 .advertise-button {
     position: fixed;
     bottom: 20px;
@@ -172,4 +223,69 @@ header {
 
 .advertise-button:hover {
     background-color: #FFC107;
+}
+
+@media (max-width: 768px) {
+    .navbar > div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .buscar-box {
+        width: 100%;
+    }
+
+    .nav-icons-container {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        padding: 1rem 0;
+        display: none;
+    }
+
+    nav ul.open {
+        display: flex;
+    }
+
+    nav ul li {
+        margin: 0.5rem 0;
+    }
+
+    .menu-button {
+        display: block;
+    }
+
+    .header-bottom-side {
+        flex-direction: column;
+    }
+
+    .header-bottom-side-left, .header-bottom-side-right {
+        flex-basis: 100%;
+    }
+
+    .header-bottom-side-left button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.5rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    .header-bottom-side-left h2 {
+        font-size: 1.5rem;
+    }
+
+    .header-bottom-side-left p {
+        font-size: 1rem;
+    }
 }
