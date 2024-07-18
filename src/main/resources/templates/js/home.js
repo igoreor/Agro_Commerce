@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const nav = document.querySelector("nav ul");
     const btnFechar = document.querySelector('.btn-fechar');
     const inputBuscar = document.querySelector('.input-buscar input');
+    const advertiseButton = document.querySelector('.advertise-button'); 
 
     menuButton.addEventListener("click", function() {
         nav.classList.toggle("open");
@@ -10,5 +11,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     btnFechar.addEventListener('click', () => {
         inputBuscar.value = '';
+    });
+
+    advertiseButton.addEventListener('click', function() {
+        window.location.href = '../vendas/vendas.html'; 
     });
 });
