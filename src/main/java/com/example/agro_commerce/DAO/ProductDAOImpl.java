@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -15,8 +16,8 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public boolean insertProduct(Product product) {
-        String sql = "INSERT INTO product (type_product, name_product, description_product) VALUES (?, ?, ?)";
-        int rowsAffected = jdbcTemplate.update(sql, product.getType(), product.getName(), product.getDescription());
+        String sql = "INSERT INTO product (type_product, name_product, description_product,value_product) VALUES (?, ?, ?, ?)";
+        int rowsAffected = jdbcTemplate.update(sql, product.getType(), product.getName(), product.getDescription(), product.getValue());
         return rowsAffected > 0;
     }
 
@@ -28,8 +29,8 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public boolean updateProduct(Product product) {
-        String sql = "UPDATE product SET type_product = ?, name_product = ?, description_product = ? WHERE product_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, product.getType(), product.getName(), product.getDescription(), product.getProductId());
+        String sql = "UPDATE product SET description = ?, description = ?, value = ?, description = ? WHERE product_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, product.getType(), product.getName(), product.getDescription(), product.getValue(), product.getProductId());
         return rowsAffected > 0;
     }
 

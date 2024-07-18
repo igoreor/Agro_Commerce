@@ -38,6 +38,7 @@ CREATE TABLE product (
     product_id SERIAL NOT NULL,
     type_product VARCHAR(50) NOT NULL,
     name_product VARCHAR(100) NOT NULL,
+    value_product DECIMAL NOT NULL,
     description_product TEXT NOT NULL,
     PRIMARY KEY(product_id)
 );

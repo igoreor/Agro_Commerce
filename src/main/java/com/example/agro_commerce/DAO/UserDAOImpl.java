@@ -43,7 +43,7 @@ public class UserDAOImpl implements UserDAO {
     public boolean insertUser(User user) {
         String sql = "INSERT INTO userr (user_name, user_email, password, sex, birthDate) VALUES (?, ?, ?, ?, ?)";
         try {
-            // Validação dos campos obrigatórios
+
             if (user.getUserName() == null || user.getUserName().isEmpty() ||
                     user.getEmail() == null || user.getEmail().isEmpty() ||
                     user.getPassword() == null || user.getPassword().isEmpty() ||

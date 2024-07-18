@@ -25,7 +25,7 @@ function submitForm() {
         value: form.value.value
     };
 
-    fetch('/products', {
+    fetch('http://localhost:8090/agro-commerce/products', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
