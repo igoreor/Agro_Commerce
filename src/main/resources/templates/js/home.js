@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const advertiseButton = document.querySelector('.advertise-button');
     const sobreLink = document.getElementById('sobre-link');
     const sobreSection = document.getElementById('sobre');
+    const lupaBuscar = document.querySelector('.lupa-buscar');
 
     menuButton.addEventListener("click", function() {
         nav.classList.toggle("open");
@@ -21,6 +22,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     sobreLink.addEventListener('click', function() {
         sobreSection.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    lupaBuscar.addEventListener('click', function() {
+        const query = inputBuscar.value;
+        if (query) {
+            window.location.href = `../pesquisa/pesquisa.html?query=${query}`;
+        }
     });
 
     const cookies = document.cookie.split(';').reduce((acc, cookie) => {
