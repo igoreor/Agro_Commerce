@@ -34,13 +34,13 @@ function submitForm() {
     })
     .then(response => {
         if (response.ok) {
-            alert('Product reserved successfully!');
+            alert('Produto cadastrado com sucesso!');
         } else {
-            alert('Failed to reserve product.');
+            alert('Falha ao cadastrar produto.');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while reserving the product.');
+        alert('Um erro ocorreu durante o cadastro do produto');
     });
 }
