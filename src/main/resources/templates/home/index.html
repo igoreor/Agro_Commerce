@@ -10,25 +10,26 @@
 <body>
 <div class="navbar">
     <div class="header-inner-content">
-        <h1 class="logo">AGRO <span>commerce</span></h1>
+        <div class="logo-container">
+            <img src="../images/logo.png" alt="Logo" class="logo-image"/>
+            <h1 class="logo">AGRO <span>commerce</span></h1>
+        </div>
         <div class="buscar-box">
             <div class="lupa-buscar">
                 <i class="bi bi-search"></i>
             </div>
-
             <div class="input-buscar">
                 <input type="text" name="" id="" placeholder="Faça uma busca">
             </div>
-
             <div class="btn-fechar">
                 <i class="bi bi-x-circle"></i>
             </div>
         </div>
         <nav>
             <ul>
-                <li>Home</li>
-                <li>Produtos</li>
-                <li>Sobre</li>
+                <li><a href="../home/index.html">Home</a></li>
+                <li><a href="../shopping/shopping.html">Produtos</a></li>
+                <li id="sobre-link">Sobre</li>
                 <li>Contato</li>
             </ul>
         </nav>
@@ -48,7 +49,7 @@
             <div class="header-bottom-side-left">
                 <h2>Faça Suas Compras Aqui!</h2>
                 <p>Cuide da sua saúde comprando frutas e verduras frescas</p>
-                <button>Ver agora &#8594;</button>
+                <button><a href="../shopping/shopping.html"> Ver agora &#8594;</a></button>
             </div>
             <div class="header-bottom-side-right">
                 <img src="../images/file.png" />
@@ -56,6 +57,29 @@
         </div>
     </div>
 </header>
+
+<section id="sobre">
+    <div class="sobre-content">
+        <h2>Sobre o Agrocommerce</h2>
+        <div class="sobre-columns">
+            <div class="sobre-column">
+                <p>A aplicação é uma plataforma de comércio eletrônico que conecta compradores e vendedores, facilitando o processo de compra, venda e avaliação de produtos.</p>
+                <p>A plataforma possui dois tipos principais de usuários: compradores e vendedores. Cada usuário tem um perfil com informações essenciais como nome de usuário e email, permitindo a identificação e a interação dentro da aplicação.</p>
+                <p>Os vendedores podem cadastrar produtos na plataforma, especificando detalhes como nome, tipo, valor e descrição. Eles gerenciam o estoque desses produtos, indicando quantidades disponíveis para venda, garantindo que a informação sobre a disponibilidade dos produtos esteja sempre atualizada. Além disso, os vendedores podem registrar várias localizações onde seus produtos estão disponíveis, facilitando a logística e a comunicação com os compradores.</p>
+            </div>
+            <div class="sobre-column">
+                <p>Compradores podem navegar e pesquisar produtos listados pelos vendedores, utilizando filtros para encontrar itens específicos de interesse. Quando um comprador encontra um produto desejado, ele pode realizar a compra do produto e ir buscar o seu produto.</p>
+                <p>A plataforma facilita a comunicação direta entre compradores e vendedores, permitindo que os compradores tirem dúvidas sobre os produtos, negociem detalhes de compra e obtenham informações adicionais diretamente dos vendedores. As informações de contato entre compradores e vendedores são armazenadas no sistema, incluindo números de telefone, para facilitar futuras interações.</p>
+                <p>Após a compra, compradores podem deixar avaliações para os vendedores, fornecendo feedback sobre suas experiências. Essas avaliações são essenciais para manter a confiança e a transparência na plataforma.</p>
+            </div>
+        </div>
+        <div class="nuvem-fala">
+
+            <p>O Agrocommerce conecta compradores e vendedores de maneira simples e eficiente!</p>
+
+        </div>
+    </div>
+</section>
 
 <button class="advertise-button" href="../vendas/vendas.html">Anuncie seus produtos aqui </button>
 

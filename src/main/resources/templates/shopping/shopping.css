@@ -204,3 +204,10 @@ button:hover {
 .advertise-button:hover {
     background-color: #FFC107;
 }
+li a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
