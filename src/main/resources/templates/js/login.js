@@ -23,6 +23,9 @@ function entrar() {
     .then(data => {
         document.getElementById('msgError').style.display = 'none';
 
+        
+        document.cookie = `token=${data.token}; path=/;`;
+        document.cookie = `userLogado=${JSON.stringify(data.user)}; path=/;`;
 
         window.location.href = '../home/home.html';
     })
@@ -31,5 +34,4 @@ function entrar() {
         document.getElementById('msgError').innerText = 'Email ou senha incorretos.';
         document.getElementById('msgError').style.display = 'block';
     });
-
 }
