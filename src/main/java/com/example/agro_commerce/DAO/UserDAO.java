@@ -4,6 +4,7 @@ import com.example.agro_commerce.model.User;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDAO {
 
@@ -16,4 +17,5 @@ public interface UserDAO {
     boolean deleteUser(User user) throws SQLException;
 
     User getUser(int userId) throws SQLException;
+    Optional<User> findByEmail(String email);
 }

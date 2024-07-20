@@ -2,7 +2,7 @@ CREATE TABLE userr (
     user_id SERIAL  NOT NULL,
     user_name VARCHAR(100) NOT NULL,
     user_email VARCHAR(50) NOT NULL,
-    password VARCHAR(16) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     birthDate DATE NOT NULL,
     sex VARCHAR(10) NOT NULL,
     PRIMARY KEY(user_id),
