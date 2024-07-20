@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -122,6 +123,16 @@ public class UserDAOImpl implements UserDAO {
         } catch (DataAccessException e) {
             logger.error("Error getting user: {}", e.getMessage());
             throw new DAOException("Error getting user", e);
+        }
+    }
+    @Override
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM userr WHERE user_email = ?";
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[]{email}, userRowMapper));
+        } catch (Exception e) {
+            return Optional.empty();
         }
     }
 }
