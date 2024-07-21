@@ -25,10 +25,13 @@ public class TokenService {
                     .withSubject(usuario.getEmail())
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
+            System.out.println(token);
             return token;
+
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error while authenticating");
         }
+
     }
     public String validateToken (String token) {
         try {

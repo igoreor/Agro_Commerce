@@ -4,6 +4,8 @@ import com.example.agro_commerce.DAO.UserDAO;
 import com.example.agro_commerce.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class UserController {
         this.userDAO = userDAO;
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<String> createUser(@RequestBody User user) {
         try {
             if (userDAO.insertUser(user)) {
@@ -32,7 +34,7 @@ public class UserController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<User>> listAllUsers() {
         try {
             List<User> users = userDAO.listAllUsers();
@@ -74,6 +76,18 @@ public class UserController {
     public ResponseEntity<User> getUser(@PathVariable int userId) {
         try {
             User user = userDAO.getUser(userId);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<User> getProfile() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            User user = userDAO.getUserByUsername(username);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);

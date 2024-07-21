@@ -135,4 +135,15 @@ public class UserDAOImpl implements UserDAO {
             return Optional.empty();
         }
     }
+
+    @Override
+    public User getUserByUsername(String username) {
+        String sql = "SELECT * FROM userr WHERE user_name = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, userRowMapper, username);
+        } catch (DataAccessException e) {
+            logger.error("Error getting user by username: {}", e.getMessage());
+            throw new DAOException("Error getting user by username", e);
+        }
+    }
 }

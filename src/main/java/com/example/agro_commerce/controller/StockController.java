@@ -21,7 +21,7 @@ public class StockController {
     }
 
     @SneakyThrows
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Stock> createStock(@RequestBody Stock stock) {
         if (stockDAO.insertStock(stock)) {
             return ResponseEntity.ok(stock);
@@ -30,7 +30,7 @@ public class StockController {
     }
 
     @SneakyThrows
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Stock>> getAllStocks() {
         List<Stock> stocks = stockDAO.listAllStocks();
         if (stocks.isEmpty()) {

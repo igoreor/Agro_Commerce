@@ -47,3 +47,4 @@ public class AssessmentDAOImpl implements AssessmentDAO {
         return jdbcTemplate.queryForObject(sql, BeanPropertyRowMapper.newInstance(Assessment.class), assessmentId);
     }
 }
+

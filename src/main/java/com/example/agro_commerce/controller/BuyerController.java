@@ -21,7 +21,7 @@ public class BuyerController {
     }
 
     @SneakyThrows
-    @PostMapping
+    @PostMapping ("/")
     public ResponseEntity<Buyer> createBuyer(@RequestBody Buyer buyer) {
         if (buyerDAO.insertBuyer(buyer)) {
             return ResponseEntity.ok(buyer);
@@ -30,7 +30,7 @@ public class BuyerController {
     }
 
     @SneakyThrows
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Buyer>> getAllBuyers() {
         List<Buyer> buyers = buyerDAO.listAllBuyers();
         if (buyers.isEmpty()) {

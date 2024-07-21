@@ -10,6 +10,8 @@ public interface ProductDAO {
 
     boolean insertProduct(Product product) throws SQLException;
 
+    List<Product> listAllProductsByName(String name);
+
     List<Product> listAllProducts() throws SQLException;
 
     boolean deleteProduct(Product product) throws SQLException;

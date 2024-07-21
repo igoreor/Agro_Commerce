@@ -20,7 +20,7 @@ public class AssessmentController {
         this.assessmentDAO = assessmentDAO;
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Assessment> createAssessment(@RequestBody Assessment assessment) throws SQLException {
         if (assessmentDAO.insertAssessment(assessment)) {
             return ResponseEntity.ok(assessment);
@@ -28,7 +28,7 @@ public class AssessmentController {
         return ResponseEntity.status(500).build();
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Assessment>> getAllAssessments() throws SQLException {
         List<Assessment> assessments = assessmentDAO.listAllAssessments();
         if (assessments.isEmpty()) {

@@ -21,7 +21,7 @@ public class ReservationController {
     }
 
     @SneakyThrows
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
         if (reservationDAO.insertReservation(reservation)) {
             return ResponseEntity.ok(reservation);
@@ -30,7 +30,7 @@ public class ReservationController {
     }
 
     @SneakyThrows
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Reservation>> getAllReservations() {
         List<Reservation> reservations = reservationDAO.listAllReservations();
         if (reservations.isEmpty()) {

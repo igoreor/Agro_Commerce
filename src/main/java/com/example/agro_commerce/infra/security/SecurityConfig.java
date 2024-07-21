@@ -39,6 +39,9 @@ public class SecurityConfig {
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/products/").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/name/{name}").permitAll()
                         .anyRequest().authenticated()
                 ).addFilterBefore(Filter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

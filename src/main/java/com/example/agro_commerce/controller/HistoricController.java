@@ -21,7 +21,7 @@ public class HistoricController {
     }
 
     @SneakyThrows
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Historic> createHistoric(@RequestBody Historic historic) {
         if (historicDAO.insertHistoric(historic)) {
             return ResponseEntity.ok(historic);

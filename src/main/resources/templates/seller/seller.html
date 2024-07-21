@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="../seller/seller.css" />
+    <title>Informações de Venda</title>
+    <style>
+        .msg {
+          display: none;
+          margin-top: 10px;
+          padding: 10px;
+          border-radius: 5px;
+        }
+        .msg.error {
+          color: #fff;
+          background-color: #ff4d4d;
+        }
+        .msg.success {
+          color: #fff;
+          background-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="voltar">
+        <a href="../home/index.html" class="back-button">Voltar</a>
+    </div>
+    <div class="card">
+        <h1>Vendedor</h1>
+
+        <div id="msgError" class="msg error"></div>
+        <div id="msgSuccess" class="msg success"></div>
+
+        <div class="voltar">
+            <a href="../home/index.html" class="back-button">Voltar</a>
+        </div>
+        <div class="label-float">
+            <input type="text" id="telefone" placeholder=" " required inputmode="numeric" />
+            <label for="telefone">Telefone para Contato</label>
+        </div>
+
+        <div class="label-float">
+            <input type="text" id="estado" placeholder=" " required />
+            <label for="estado">Estado</label>
+        </div>
+
+        <div class="label-float">
+            <input type="text" id="cidade" placeholder=" " required />
+            <label for="cidade">Cidade</label>
+        </div>
+
+        <div class="label-float">
+            <input type="text" id="bairro" placeholder=" " required />
+            <label for="bairro">Bairro</label>
+        </div>
+
+        <div class="label-float">
+            <input type="text" id="rua" placeholder=" " required />
+            <label for="rua">Rua</label>
+        </div>
+
+        <div class="label-float">
+            <input type="text" id="numero" placeholder=" " required inputmode="numeric" />
+            <label for="numero">Número</label>
+        </div>
+
+        <div class="justify-center">
+            <button onclick="cadastrarVenda()">Cadastrar</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/seller.js"></script>
+</body>
+</html>

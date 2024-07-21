@@ -21,7 +21,7 @@ public class ContactController {
     }
 
     @SneakyThrows
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Contact> createContact(@RequestBody Contact contact) {
         if (contactDAO.insertContact(contact)) {
             return ResponseEntity.ok(contact);
@@ -30,7 +30,7 @@ public class ContactController {
     }
 
     @SneakyThrows
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Contact>> getAllContacts() {
         List<Contact> contacts = contactDAO.listAllContacts();
         if (contacts.isEmpty()) {

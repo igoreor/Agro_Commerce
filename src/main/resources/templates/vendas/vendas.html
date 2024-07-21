@@ -9,39 +9,40 @@
 <body>
 <div class="voltar">
     <a href="../home/index.html" class="back-button">Voltar</a>
-<div class="container">
-    <div class="header">
-        <div class="logo">
-            <img id="product-image-preview" src="https://via.placeholder.com/100" alt="Logo">
-            <input type="file" id="image-upload" name="image-upload" accept="image/*" onchange="previewImage(event)">
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img id="product-image-preview" src="https://via.placeholder.com/100" alt="Logo">
+                <input type="file" id="image-upload" name="image-upload" accept="image/*" onchange="previewImage(event)">
+            </div>
+            <div class="title">
+                <h1>Cadastro de Produtos</h1>
+            </div>
         </div>
-        <div class="title">
-            <h1>Cadastro de Produtos</h1>
-        </div>
+        <form id="reservation-form">
+            <div class="form-group">
+                <label for="type">Tipo</label>
+                <select id="type" name="type" required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="frutas">Frutas</option>
+                    <option value="verduras">Verduras</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="name">Nome</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Descrição</label>
+                <textarea id="description" name="description" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="value">Valor</label>
+                <input type="text" id="value" name="value" required>
+            </div>
+            <button type="button" onclick = "submitForm()">Cadastrar</button>
+        </form>
     </div>
-    <form id="reservation-form">
-        <div class="form-group">
-            <label for="type">Tipo</label>
-            <select id="type" name="type" required>
-                <option value="">Selecione o tipo</option>
-                <option value="frutas">Frutas</option>
-                <option value="verduras">Verduras</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="name">Nome</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="description">Descrição</label>
-            <textarea id="description" name="description" rows="3" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="value">Valor</label>
-            <input type="text" id="value" name="value" required>
-        </div>
-        <button type="button" onclick="submitForm()">Cadastrar</button>
-    </form>
 </div>
 <script src="../js/vendas.js"></script>
 </body>

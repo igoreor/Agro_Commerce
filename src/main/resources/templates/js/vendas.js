@@ -24,11 +24,13 @@ function submitForm() {
         description: form.description.value,
         value: form.value.value
     };
+     const token = localStorage.getItem("token");
 
-    fetch('http://localhost:8090/agro-commerce/products', {
+    fetch('http://localhost:8090/products/', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+             Authorization:  `Bearer ${token}`,
         },
         body: JSON.stringify(data)
     })

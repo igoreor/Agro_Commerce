@@ -17,5 +17,8 @@ public interface UserDAO {
     boolean deleteUser(User user) throws SQLException;
 
     User getUser(int userId) throws SQLException;
+
+    User getUserByUsername(String username);
+
     Optional<User> findByEmail(String email);
 }

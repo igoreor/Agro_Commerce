@@ -21,21 +21,31 @@ public class ProductController {
     }
 
     @SneakyThrows
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         if (productDAO.insertProduct(product)) {
+
             return ResponseEntity.ok(product);
         }
         return ResponseEntity.status(500).build();
     }
     @SneakyThrows
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productDAO.listAllProducts();
         if (products.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<Product>> getAllProductsByName(@PathVariable String name) {
+        List<Product> products = productDAO.listAllProductsByName(name);
+        if (products.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(products);
     }
 
     @SneakyThrows

@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const searchResultsContainer = document.getElementById('search-results');
 
     if (query) {
-        fetch(`http://localhost:8080/produtos?nome=${query}`)
+        fetch(`http://localhost:8090/products/name/${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
                 if (data.length > 0) {
@@ -13,9 +13,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         const productElement = document.createElement('div');
                         productElement.className = 'product-item';
                         productElement.innerHTML = `
-                            <h3>${product.nome}</h3>
-                            <p>${product.descricao}</p>
-                            <p>Preço: R$ ${product.preco}</p>
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <p>Preço: R$ ${product.value}</p>
                         `;
                         searchResultsContainer.appendChild(productElement);
                     });

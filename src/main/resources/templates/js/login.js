@@ -4,10 +4,10 @@ function entrar() {
 
     const data = {
         email: email,
-        senha: senha
+        password: senha
     };
 
-    fetch('http://localhost:8090/login', {
+    fetch('http://localhost:8090/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -23,15 +23,29 @@ function entrar() {
     .then(data => {
         document.getElementById('msgError').style.display = 'none';
 
-        
-        document.cookie = `token=${data.token}; path=/;`;
-        document.cookie = `userLogado=${JSON.stringify(data.user)}; path=/;`;
 
-        window.location.href = '../home/home.html';
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userLogado', JSON.stringify(data.user));
+
+
+        window.location.href = '../home/index.html';
     })
     .catch(error => {
         console.error('Erro:', error);
         document.getElementById('msgError').innerText = 'Email ou senha incorretos.';
         document.getElementById('msgError').style.display = 'block';
     });
+}
+
+function togglePasswordVisibility(passwordFieldId, toggleIcon) {
+    const passwordField = document.getElementById(passwordFieldId);
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
 }

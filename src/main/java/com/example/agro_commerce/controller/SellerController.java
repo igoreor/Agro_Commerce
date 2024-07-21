@@ -22,7 +22,7 @@ public class SellerController {
     }
 
     @SneakyThrows
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Seller> createSeller(@RequestBody Seller seller) {
         if (sellerDAO.insertSeller(seller)) {
             return ResponseEntity.ok(seller);
@@ -31,7 +31,7 @@ public class SellerController {
     }
 
     @SneakyThrows
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Seller>> getAllSellers() {
         List<Seller> sellers = sellerDAO.listAllSellers();
         if (sellers.isEmpty()) {

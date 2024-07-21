@@ -21,7 +21,7 @@ public class LocationController {
     }
 
     @SneakyThrows
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<Location> createLocation(@RequestBody Location location) {
         if (locationDAO.insertLocation(location)) {
             return ResponseEntity.ok(location);
@@ -30,7 +30,7 @@ public class LocationController {
     }
 
     @SneakyThrows
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Location>> getAllLocations() {
         List<Location> locations = locationDAO.listAllLocations();
         if (locations.isEmpty()) {
