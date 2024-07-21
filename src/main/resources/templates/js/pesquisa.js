@@ -3,11 +3,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const query = urlParams.get('query');
 
     const searchResultsContainer = document.getElementById('search-results');
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const clearButton = document.querySelector('.btn-fechar');
 
-    if (query) {
+    function performSearch(query) {
         fetch(`http://localhost:8090/products/name/${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
+                searchResultsContainer.innerHTML = '';
                 if (data.length > 0) {
                     data.forEach(product => {
                         const productElement = document.createElement('div');
@@ -28,4 +32,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.error('Erro:', error);
             });
     }
+
+    if (query) {
+        performSearch(query);
+    }
+
+    searchForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const query = searchInput.value.trim();
+        if (query) {
+            performSearch(query);
+        }
+    });
+
+    clearButton.addEventListener('click', function() {
+        searchInput.value = '';
+    });
+
 });

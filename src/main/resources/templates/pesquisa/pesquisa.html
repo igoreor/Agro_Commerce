@@ -3,41 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <title>Resultados da Pesquisa</title>
     <link rel="stylesheet" href="pesquisa.css">
 </head>
 <body>
 <div class="navbar">
     <div class="header-inner-content">
-        <h1 class="logo">AGRO <span>commerce</span></h1>
-        <div class="buscar-box">
+        <div class="logo-container">
+            <img src="../images/logo.png" alt="Logo" class="logo-image"/>
+            <h1 class="logo">AGRO <span>commerce</span></h1>
+        </div>
+        <form id="search-form" class="buscar-box">
             <div class="lupa-buscar">
                 <i class="bi bi-search"></i>
             </div>
-
             <div class="input-buscar">
-                <input type="text" id="search" placeholder="Faça uma busca">
+                <input type="text" id="search-input" placeholder="Faça uma busca">
             </div>
-
             <div class="btn-fechar">
                 <i class="bi bi-x-circle"></i>
             </div>
-        </div>
+        </form>
         <nav>
             <ul>
-                <li>Home</li>
-                <li>Produtos</li>
-                <li>Sobre</li>
+                <li><a href="../home/index.html">Home</a></li>
+                <li><a href="../shopping/shopping.html">Produtos</a></li>
+                <li id="sobre-link">Sobre</li>
                 <li>Contato</li>
             </ul>
         </nav>
         <div class="nav-icons-container">
             <div class="image-container">
-                <img src="../images/kindpng_746008.png" class="clickable-image"/>
+                <img src="../images/kindpng_746008.png" class="clickable-image" id="sair"/>
                 <span class="hover-text">Sair</span>
             </div>
             <img src="../images/menu.png" class="menu-button"/>
         </div>
+        <div id="logado" class="logado-text"></div>
     </div>
 </div>
 
