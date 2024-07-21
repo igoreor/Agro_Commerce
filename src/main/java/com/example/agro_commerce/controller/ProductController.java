@@ -2,12 +2,20 @@ package com.example.agro_commerce.controller;
 
 import com.example.agro_commerce.DAO.ProductDAO;
 import com.example.agro_commerce.model.Product;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/products")
@@ -20,18 +28,28 @@ public class ProductController {
         this.productDAO = productDAO;
     }
 
-    @SneakyThrows
     @PostMapping("/")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        if (productDAO.insertProduct(product)) {
+    public ResponseEntity<Product> createProduct(
+            @RequestParam("type") String type,
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("value") BigDecimal value,
+            @RequestParam("image") MultipartFile image) throws IOException, SQLException {
 
+        // Salvar a imagem
+        String imagePath = saveImage(image);
+
+        // Criar o produto
+        Product product = new Product(0, type, name, value, description, imagePath);
+
+        if (productDAO.insertProduct(product)) {
             return ResponseEntity.ok(product);
         }
         return ResponseEntity.status(500).build();
     }
-    @SneakyThrows
+
     @GetMapping("/")
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<Product>> getAllProducts() throws SQLException {
         List<Product> products = productDAO.listAllProducts();
         if (products.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -48,9 +66,8 @@ public class ProductController {
         return ResponseEntity.ok().body(products);
     }
 
-    @SneakyThrows
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable int id) {
+    public ResponseEntity<Product> getProductById(@PathVariable int id) throws SQLException {
         Product product = productDAO.getProduct(id);
         if (product != null) {
             return ResponseEntity.ok(product);
@@ -58,19 +75,26 @@ public class ProductController {
         return ResponseEntity.notFound().build();
     }
 
-    @SneakyThrows
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
-        product.setProductId(id);
+    public ResponseEntity<Product> updateProduct(
+            @PathVariable int id,
+            @RequestParam("type") String type,
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("value") BigDecimal value,
+            @RequestParam("image") MultipartFile image) throws IOException, SQLException {
+
+        String imagePath = saveImage(image);
+
+        Product product = new Product(id, type, name, value, description, imagePath);
         if (productDAO.updateProduct(product)) {
             return ResponseEntity.ok(product);
         }
         return ResponseEntity.status(500).build();
     }
 
-    @SneakyThrows
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable int id) throws SQLException {
         Product product = new Product();
         product.setProductId(id);
         if (productDAO.deleteProduct(product)) {
@@ -78,6 +102,18 @@ public class ProductController {
         }
         return ResponseEntity.status(500).build();
     }
+
+    private String saveImage(MultipartFile image) throws IOException {
+        if (image.isEmpty()) {
+            return null;
+        }
+
+        String fileName = UUID.randomUUID().toString() + "_" + image.getOriginalFilename();
+        Path imagePath = Paths.get("images/" + fileName);
+
+        Files.createDirectories(imagePath.getParent());
+        Files.write(imagePath, image.getBytes());
+
+        return imagePath.toString();
+    }
 }
-
-

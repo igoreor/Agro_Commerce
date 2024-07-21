@@ -27,14 +27,28 @@ public class ProductDAOImpl implements ProductDAO {
             String nameProduct = rs.getString("name_product");
             BigDecimal valueProduct = rs.getBigDecimal("value_product");
             String descriptionProduct = rs.getString("description_product");
-            return new Product(productId, typeProduct, nameProduct, valueProduct, descriptionProduct);
+            String image = rs.getString("image");
+            return new Product(productId, typeProduct, nameProduct, valueProduct, descriptionProduct, image);
+        }
+    };
+
+    private final RowMapper<User> userRowMapper = new RowMapper<>() {
+        @Override
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            int userId = rs.getInt("user_id");
+            String userName = rs.getString("user_name");
+            String email = rs.getString("user_email");
+            String password = rs.getString("password");
+            String sex = rs.getString("sex");
+            LocalDate birthDate = rs.getDate("birth_date").toLocalDate();
+            return new User(userId, userName, email, password, sex, birthDate);
         }
     };
 
     @Override
     public boolean insertProduct(Product product) {
-        String sql = "INSERT INTO product (type_product, name_product, description_product, value_product) VALUES (?, ?, ?, ?)";
-        int rowsAffected = jdbcTemplate.update(sql, product.getType(), product.getName(), product.getDescription(), product.getValue());
+        String sql = "INSERT INTO product (type_product, name_product, description_product, value_product, image) VALUES (?, ?, ?, ?, ?)";
+        int rowsAffected = jdbcTemplate.update(sql, product.getType(), product.getName(), product.getDescription(), product.getValue(), product.getImage());
         return rowsAffected > 0;
     }
 
@@ -52,8 +66,8 @@ public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public boolean updateProduct(Product product) {
-        String sql = "UPDATE product SET type_product = ?, name_product = ?, description_product = ?, value_product = ? WHERE product_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, product.getType(), product.getName(), product.getDescription(), product.getValue(), product.getProductId());
+        String sql = "UPDATE product SET type_product = ?, name_product = ?, description_product = ?, value_product = ?, image = ? WHERE product_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, product.getType(), product.getName(), product.getDescription(), product.getValue(), product.getImage(), product.getProductId());
         return rowsAffected > 0;
     }
 

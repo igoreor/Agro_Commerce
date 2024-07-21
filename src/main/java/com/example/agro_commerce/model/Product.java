@@ -18,6 +18,7 @@ public class Product {
     private String name;
     private BigDecimal value;
     private String description;
+    private String image;
 
     @Override
     public String toString() {
@@ -27,6 +28,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 ", description='" + description + '\'' +
+                ", image = '" + image +
                 '}';
     }
 }

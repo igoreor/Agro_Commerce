@@ -1,4 +1,4 @@
-package com.example.agro_commerce.infra.cors;
+package com.example.agro_commerce.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

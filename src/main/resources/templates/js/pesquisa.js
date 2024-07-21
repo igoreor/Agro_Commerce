@@ -6,8 +6,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
     const clearButton = document.querySelector('.btn-fechar');
+    const lupaBuscar = document.querySelector('.lupa-buscar');
 
-    function performSearch(query) {
+    const performSearch = (query) => {
         fetch(`http://localhost:8090/products/name/${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
@@ -28,10 +29,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             })
             .catch(error => {
-                searchResultsContainer.innerHTML = '<p>Ocorreu um erro ao buscar os produtos.</p>';
+                searchResultsContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
                 console.error('Erro:', error);
             });
-    }
+    };
 
     if (query) {
         performSearch(query);
@@ -41,7 +42,14 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
         const query = searchInput.value.trim();
         if (query) {
-            performSearch(query);
+            window.location.href = `../pesquisa/pesquisa.html?query=${encodeURIComponent(query)}`;
+        }
+    });
+
+    lupaBuscar.addEventListener('click', function() {
+        const query = searchInput.value.trim();
+        if (query) {
+            window.location.href = `../pesquisa/pesquisa.html?query=${encodeURIComponent(query)}`;
         }
     });
 

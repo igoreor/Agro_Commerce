@@ -40,6 +40,7 @@ CREATE TABLE product (
     name_product VARCHAR(100) NOT NULL,
     value_product DECIMAL NOT NULL,
     description_product TEXT NOT NULL,
+    image VARCHAR(255) NOT NULL,
     PRIMARY KEY(product_id)
 );
 

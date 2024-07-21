@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const sobreLink = document.getElementById('sobre-link');
     const sobreSection = document.getElementById('sobre');
     const lupaBuscar = document.querySelector('.lupa-buscar');
+    const searchForm = document.querySelector('#search-form');
 
     menuButton.addEventListener("click", function() {
         nav.classList.toggle("open");
@@ -24,11 +25,18 @@ document.addEventListener("DOMContentLoaded", function() {
         sobreSection.scrollIntoView({ behavior: 'smooth' });
     });
 
-    lupaBuscar.addEventListener('click', function() {
-        const query = inputBuscar.value;
+    const performSearch = () => {
+        const query = inputBuscar.value.trim();
         if (query) {
-            window.location.href = `../pesquisa/pesquisa.html?query=${query}`;
+            window.location.href = `../pesquisa/pesquisa.html?query=${encodeURIComponent(query)}`;
         }
+    };
+
+    lupaBuscar.addEventListener('click', performSearch);
+
+    searchForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        performSearch();
     });
 
     const cookies = document.cookie.split(';').reduce((acc, cookie) => {
