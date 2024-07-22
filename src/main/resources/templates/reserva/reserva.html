@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reserva de Produto</title>
+    <link rel="stylesheet" href="reserva.css">
+</head>
+<body>
+<div class="navbar">
+    <div class="header-inner-content">
+        <h1 class="logo">AGRO <span>commerce</span></h1>
+        <nav>
+            <ul>
+                <li><a href="../home/index.html">Home</a></li>
+                <li><a href="../shopping/shopping.html">Produtos</a></li>
+                <li><a href="../home/index.html">Sobre</a></li>
+                <li>Contato</li>
+            </ul>
+        </nav>
+        <div class="nav-icons-container">
+            <div class="image-container">
+                <img src="../images/kindpng_746008.png" class="clickable-image"/>
+                <span class="hover-text">Sair</span>
+            </div>
+            <img src="../images/menu.png" class="menu-button"/>
+        </div>
+    </div>
+</div>
+<div id="reservation-container">
+    <div class="content-wrapper">
+        <h1 id="product-name"></h1>
+        <p id="product-description"></p>
+        <span id="product-value"></span>
+        <br>
+        <label for="quantity">Quantidade:</label>
+        <input type="number" id="quantity" min="1" value="1">
+        <br>
+        <span id="total-value"></span>
+        <br>
+        <button onclick="makeReservation()">Confirmar Reserva</button>
+    </div>
+</div>
+<script src="../js/reserva.js"></script>
+</body>
+</html>

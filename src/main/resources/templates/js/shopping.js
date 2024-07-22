@@ -16,7 +16,7 @@ async function fetchProducts() {
                     <h1>${product.name}</h1>
                     <h2>${product.description}</h2>
                     <span>R$ ${product.value}</span>
-                    <button onclick="fazerReserva('${product.name}')">faça sua reserva</button>
+                    <button onclick="redirectToReservation(${product.id})">Faça sua reserva</button>
                 </div>
             `;
             container.appendChild(card);
@@ -26,6 +26,10 @@ async function fetchProducts() {
         container.innerHTML = '<div class="error-message">Não foi possível carregar os produtos. Tente novamente mais tarde.</div>';
         console.error('Erro ao buscar produtos:', error);
     }
+}
+
+function redirectToReservation(productId) {
+    window.location.href = `../reserva/reserva.html?productId=${productId}`;
 }
 
 window.onload = fetchProducts;
